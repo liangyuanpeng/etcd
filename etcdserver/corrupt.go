@@ -353,7 +353,7 @@ func (s *EtcdServer) getPeerHashKVs(rev int64) []*peerHashKVResp {
 			ctx, cancel := context.WithTimeout(context.Background(), s.Cfg.ReqTimeout())
 
 			var resp *pb.HashKVResponse
-			resp, lastErr = s.getPeerHashKVHTTP(ctx, ep, rev)
+			resp, lastErr = s.getPeerHashKVHTTP(ctx, s.Cluster().ID(), ep, rev)
 			cancel()
 			if lastErr == nil {
 				resps = append(resps, &peerHashKVResp{peerInfo: p, resp: resp, err: nil})
@@ -478,7 +478,7 @@ func (h *hashKVHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // getPeerHashKVHTTP fetch hash of kv store at the given rev via http call to the given url
-func (s *EtcdServer) getPeerHashKVHTTP(ctx context.Context, url string, rev int64) (*pb.HashKVResponse, error) {
+func (s *EtcdServer) getPeerHashKVHTTP(ctx context.Context, cid types.ID, url string, rev int64) (*pb.HashKVResponse, error) {
 	cc := &http.Client{Transport: s.peerRt}
 	hashReq := &pb.HashKVRequest{Revision: rev}
 	hashReqBytes, err := json.Marshal(hashReq)
