@@ -32,6 +32,9 @@ jobs:
         run: |
           set -euo pipefail
 
+          go mod tidy
+          go clean --testcache; make test-unit
+
           echo "${TARGET}"
           case "${TARGET}" in
             linux-amd64)
