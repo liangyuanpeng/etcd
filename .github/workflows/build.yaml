@@ -5,9 +5,7 @@ permissions: read-all
 
 jobs:
   build:
-    runs-on: 
-    - ubuntu-latest
-    - macos-12
+    runs-on: ["ubuntu-latest","macos-12"]
     strategy:
       fail-fast: false
       matrix:
