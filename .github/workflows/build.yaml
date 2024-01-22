@@ -21,7 +21,8 @@ jobs:
           - linux-s390x
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-        ref: release-3.5
+        with:
+          ref: release-3.5
       - id: goversion
         run: echo "goversion=$(cat .go-version)" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5.0.0
