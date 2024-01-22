@@ -8,6 +8,11 @@ jobs:
     with:
       arch: amd64
       runs-on: ubuntu-latest
+  amd64-macos:
+    uses: ./.github/workflows/tests-template.yaml
+    with:
+      arch: amd64
+      runs-on: macos-latest
   arm64:
     uses: ./.github/workflows/tests-template.yaml
     with:
