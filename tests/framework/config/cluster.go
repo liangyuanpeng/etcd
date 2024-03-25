@@ -73,18 +73,10 @@ func WithPeerTLS(tls TLSConfig) ClusterOption {
 	return func(c *ClusterConfig) { c.PeerTLS = tls }
 }
 
-func WithClientTLS(tls TLSConfig) ClusterOption {
-	return func(c *ClusterConfig) { c.ClientTLS = tls }
-}
-
 func WithQuotaBackendBytes(bytes int64) ClusterOption {
 	return func(c *ClusterConfig) { c.QuotaBackendBytes = bytes }
 }
 
 func WithSnapshotCount(count uint64) ClusterOption {
 	return func(c *ClusterConfig) { c.SnapshotCount = count }
-}
-
-func WithStrictReconfigCheck(strict bool) ClusterOption {
-	return func(c *ClusterConfig) { c.StrictReconfigCheck = strict }
 }

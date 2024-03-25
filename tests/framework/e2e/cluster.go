@@ -235,10 +235,6 @@ func WithBasePort(port int) EPClusterOption {
 	return func(c *EtcdProcessClusterConfig) { c.BasePort = port }
 }
 
-func WithBaseClientScheme(scheme string) EPClusterOption {
-	return func(c *EtcdProcessClusterConfig) { c.BaseClientScheme = scheme }
-}
-
 func WithClientConnType(clientConnType ClientConnType) EPClusterOption {
 	return func(c *EtcdProcessClusterConfig) { c.Client.ConnectionType = clientConnType }
 }
