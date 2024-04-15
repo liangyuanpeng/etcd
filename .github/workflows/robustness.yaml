@@ -10,6 +10,6 @@ jobs:
       count: 1000
       testTimeout: 200m
       artifactName: main-arm64
-      runs-on: "['actuated-arm64-12cpu-8gb']"
+      runs-on: "['macos-14']"
       scenario: TestRobustnessExploratory/Kubernetes/LowTraffic/ClusterOfSize1
       lazyfsEnabled: false
