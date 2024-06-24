@@ -30,8 +30,9 @@ import (
 )
 
 const (
-	grpcOverheadBytes = 512 * 1024
-	maxSendBytes      = math.MaxInt32
+	grpcOverheadBytes                      = 512 * 1024
+	maxSendBytes                           = math.MaxInt32
+	
 )
 
 func Server(s *etcdserver.EtcdServer, tls *tls.Config, interceptor grpc.UnaryServerInterceptor, gopts ...grpc.ServerOption) *grpc.Server {
@@ -54,10 +55,9 @@ func Server(s *etcdserver.EtcdServer, tls *tls.Config, interceptor grpc.UnarySer
 		grpc_prometheus.StreamServerInterceptor,
 	}
 
-	if s.Cfg.ExperimentalEnableDistributedTracing {
+	if s.Cfg.ServerFeatureGate.Enabled(DistributedTracing) {
 		chainUnaryInterceptors = append(chainUnaryInterceptors, otelgrpc.UnaryServerInterceptor(s.Cfg.ExperimentalTracerOptions...))
 		chainStreamInterceptors = append(chainStreamInterceptors, otelgrpc.StreamServerInterceptor(s.Cfg.ExperimentalTracerOptions...))
-
 	}
 
 	opts = append(opts, grpc.ChainUnaryInterceptor(chainUnaryInterceptors...))

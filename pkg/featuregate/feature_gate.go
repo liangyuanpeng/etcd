@@ -43,6 +43,8 @@ const (
 	//   AllBeta=false,NewFeature=true  will result in NewFeature=true
 	//   AllBeta=true,NewFeature=false  will result in NewFeature=false
 	allBetaGate Feature = "AllBeta"
+
+	DistributedTracing Feature = "DistributedTracing"
 )
 
 var (
@@ -50,6 +52,8 @@ var (
 	defaultFeatures = map[Feature]FeatureSpec{
 		allAlphaGate: {Default: false, PreRelease: Alpha},
 		allBetaGate:  {Default: false, PreRelease: Beta},
+
+		DistributedTracing: {Default: false, PreRelease: Alpha},
 	}
 
 	// Special handling for a few gates.
