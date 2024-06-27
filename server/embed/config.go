@@ -382,6 +382,7 @@ type Config struct {
 	ForceNewCluster bool `json:"force-new-cluster"`
 
 	EnablePprof           bool   `json:"enable-pprof"`
+	EnableVars            bool   `json:"enable-vars"`
 	Metrics               string `json:"metrics"`
 	ListenMetricsUrls     []url.URL
 	ListenMetricsUrlsJSON string `json:"listen-metrics-urls"`
@@ -717,6 +718,7 @@ func (cfg *Config) AddFlags(fs *flag.FlagSet) {
 
 	// pprof profiler via HTTP
 	fs.BoolVar(&cfg.EnablePprof, "enable-pprof", false, "Enable runtime profiling data via HTTP server. Address is at client URL + \"/debug/pprof/\"")
+	fs.BoolVar(&cfg.EnableVars, "enable-vars", false, "Enable runtime profiling data via HTTP server. Address is at client URL + \"/debug/vars/\"")
 
 	// additional metrics
 	fs.StringVar(&cfg.Metrics, "metrics", cfg.Metrics, "Set level of detail for exported metrics, specify 'extensive' to include server side grpc histogram metrics")

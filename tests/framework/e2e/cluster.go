@@ -358,6 +358,18 @@ func WithExperimentalStopGRPCServiceOnDefrag(stopGRPCServiceOnDefrag bool) EPClu
 	}
 }
 
+func WithEnablePprof(enablePprof bool) EPClusterOption {
+	return func(c *EtcdProcessClusterConfig) {
+		c.ServerConfig.EnablePprof=enablePprof
+	}
+}
+
+func WithEnableVars(enableVars bool) EPClusterOption {
+	return func(c *EtcdProcessClusterConfig) {
+		c.ServerConfig.EnableVars = enableVars
+	}
+}
+
 func WithCompactionBatchLimit(limit int) EPClusterOption {
 	return func(c *EtcdProcessClusterConfig) { c.ServerConfig.ExperimentalCompactionBatchLimit = limit }
 }

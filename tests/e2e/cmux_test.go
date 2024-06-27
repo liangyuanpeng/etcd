@@ -44,6 +44,8 @@ func TestConnectionMultiplexing(t *testing.T) {
 		name             string
 		serverTLS        e2e.ClientConnType
 		separateHTTPPort bool
+		enableVars       bool
+		enablePprof      bool
 	}{
 		{
 			name:      "ServerTLS",
@@ -67,12 +69,24 @@ func TestConnectionMultiplexing(t *testing.T) {
 			serverTLS:        e2e.ClientNonTLS,
 			separateHTTPPort: true,
 		},
+		{
+			name:        "EnablePprof",
+			serverTLS:   e2e.ClientNonTLS,
+			enablePprof: true,
+		},
+		{
+			name:       "EnableVars",
+			serverTLS:  e2e.ClientNonTLS,
+			enableVars: true,
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
 			cfg := e2e.NewConfig(e2e.WithClusterSize(1))
 			cfg.Client.ConnectionType = tc.serverTLS
 			cfg.ClientHTTPSeparate = tc.separateHTTPPort
+			cfg.ServerConfig.EnablePprof = tc.enablePprof
+			cfg.ServerConfig.EnableVars = tc.enableVars
 			clus, err := e2e.NewEtcdProcessCluster(ctx, t, e2e.WithConfig(cfg))
 			require.NoError(t, err)
 			defer clus.Close()
@@ -93,14 +107,14 @@ func TestConnectionMultiplexing(t *testing.T) {
 					name = "ClientTLS"
 				}
 				t.Run(name, func(t *testing.T) {
-					testConnectionMultiplexing(ctx, t, clus.Procs[0], clientTLS)
+					testConnectionMultiplexing(ctx, t, clus.Procs[0], clientTLS, tc.enablePprof, tc.enableVars)
 				})
 			}
 		})
 	}
 }
 
-func testConnectionMultiplexing(ctx context.Context, t *testing.T, member e2e.EtcdProcess, connType e2e.ClientConnType) {
+func testConnectionMultiplexing(ctx context.Context, t *testing.T, member e2e.EtcdProcess, connType e2e.ClientConnType, enablePprof, enableVars bool) {
 	httpEndpoint := member.EndpointsHTTP()[0]
 	grpcEndpoint := member.EndpointsGRPC()[0]
 	switch connType {
@@ -134,7 +148,18 @@ func testConnectionMultiplexing(ctx context.Context, t *testing.T, member e2e.Et
 				assert.NoError(t, fetchMetrics(t, httpEndpoint, httpVersion, connType))
 				assert.NoError(t, fetchVersion(httpEndpoint, httpVersion, connType))
 				assert.NoError(t, fetchHealth(httpEndpoint, httpVersion, connType))
-				assert.NoError(t, fetchDebugVars(httpEndpoint, httpVersion, connType))
+				if enableVars {
+					assert.NoError(t, fetchDebugVars(httpEndpoint, httpVersion, connType))
+				} else {
+
+				}
+
+				if enablePprof {
+					assert.NoError(t, fetchDebugPprof(httpEndpoint, httpVersion, connType))
+				} else {
+
+				}
+
 			})
 		}
 	})
@@ -217,6 +242,16 @@ func fetchHealth(endpoint string, httpVersion string, connType e2e.ClientConnTyp
 
 func fetchDebugVars(endpoint string, httpVersion string, connType e2e.ClientConnType) error {
 	req := e2e.CURLReq{Endpoint: "/debug/vars", Timeout: 5, HTTPVersion: httpVersion}
+	respData, err := curl(endpoint, "GET", req, connType)
+	if err != nil {
+		return err
+	}
+	var resp map[string]any
+	return json.Unmarshal([]byte(respData), &resp)
+}
+
+func fetchDebugPprof(endpoint string, httpVersion string, connType e2e.ClientConnType) error {
+	req := e2e.CURLReq{Endpoint: "/debug/pprof", Timeout: 5, HTTPVersion: httpVersion}
 	respData, err := curl(endpoint, "GET", req, connType)
 	if err != nil {
 		return err
