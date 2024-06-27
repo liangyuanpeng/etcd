@@ -55,9 +55,7 @@ func Server(s *etcdserver.EtcdServer, tls *tls.Config, interceptor grpc.UnarySer
 	}
 
 	if s.Cfg.ExperimentalEnableDistributedTracing {
-		chainUnaryInterceptors = append(chainUnaryInterceptors, otelgrpc.UnaryServerInterceptor(s.Cfg.ExperimentalTracerOptions...))
-		chainStreamInterceptors = append(chainStreamInterceptors, otelgrpc.StreamServerInterceptor(s.Cfg.ExperimentalTracerOptions...))
-
+		opts = append(opts, grpc.StatsHandler(otelgrpc.NewServerHandler(s.Cfg.ExperimentalTracerOptions...)))
 	}
 
 	opts = append(opts, grpc.ChainUnaryInterceptor(chainUnaryInterceptors...))
