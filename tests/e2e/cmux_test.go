@@ -129,6 +129,7 @@ func testConnectionMultiplexing(ctx context.Context, t *testing.T, member e2e.Et
 				tname = "default"
 			}
 			t.Run(tname, func(t *testing.T) {
+				//TODO lan. 测试 /debug/pprof 和 /debug/vars
 				assert.NoError(t, fetchGRPCGateway(httpEndpoint, httpVersion, connType))
 				assert.NoError(t, fetchMetrics(t, httpEndpoint, httpVersion, connType))
 				assert.NoError(t, fetchVersion(httpEndpoint, httpVersion, connType))
